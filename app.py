@@ -28,7 +28,7 @@ def cortar_ate_texto(imagem):
     return img_cortada_final
 
 
-st.title("Gerador de Relatório com Página 2 Customizada")
+st.title("ANEXAR RELATÓRIO DE ALTA PARA O RELATÓRIO DE ALTA MÉDICA")
 
 uploaded_pdf_modelo = st.file_uploader("PDF RELATÓRIO FÍSICA", type="pdf")
 uploaded_pdf_alta = st.file_uploader("PDF RELATÓRIO ALTA MÉDICA", type="pdf")
