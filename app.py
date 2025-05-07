@@ -7,7 +7,9 @@ from PIL import Image
 import fitz  # PyMuPDF
 import io
 import numpy as np
-
+import base64
+import streamlit.components.v1 as components
+import os
 def cortar_ate_texto(imagem):
     dpi = 300
     cm_para_cortar = 3
@@ -78,6 +80,14 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
 
     final_buffer = io.BytesIO()
     output.write(final_buffer)
+    
+    # Pré-visualização do PDF no navegador
+    b64_pdf = base64.b64encode(final_buffer.getvalue()).decode('utf-8')
+    pdf_display = f'''
+        <iframe width="700" height="900" src="data:application/pdf;base64,{b64_pdf}" type="application/pdf"></iframe>
+    '''
+    st.markdown("### 📄 Pré-visualização do PDF:")
+    components.html(pdf_display, height=920)
 
     # Botão de download
     st.download_button("📄 Baixar PDF final", data=final_buffer.getvalue(), file_name=output_alta)
