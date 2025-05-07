@@ -30,64 +30,70 @@ def cortar_ate_texto(imagem):
     return img_cortada_final
 
 
+
+st.set_page_config(layout="wide")
 st.title("ANEXAR RELATÓRIO DE ALTA PARA O RELATÓRIO DE ALTA MÉDICA")
 
-uploaded_pdf_modelo = st.file_uploader("PDF RELATÓRIO FÍSICA", type="pdf")
-uploaded_pdf_alta = st.file_uploader("PDF RELATÓRIO ALTA MÉDICA", type="pdf")
+col1, col2 = st.columns(2)
 
-x = st.number_input("Posição X da imagem", value=34)
-y = st.number_input("Posição Y da imagem", value=28)
-width = st.number_input("Largura da imagem", value=540)
-height = st.number_input("Altura da imagem", value=620)
+with col1:
+    uploaded_pdf_modelo = st.file_uploader("PDF RELATÓRIO FÍSICA", type="pdf")
+    uploaded_pdf_alta = st.file_uploader("PDF RELATÓRIO ALTA MÉDICA", type="pdf")
+
+with col2:
+    col_x, col_y = st.columns(2)
+    with col_x:
+        x = st.number_input("Posição X", value=34)
+        width = st.number_input("Largura", value=540)
+    with col_y:
+        y = st.number_input("Posição Y", value=28)
+        height = st.number_input("Altura", value=620)
 
 if uploaded_pdf_modelo and uploaded_pdf_alta:
-    modelo = PdfReader(uploaded_pdf_modelo)
+    try:
+        # Nome do arquivo de saída baseado no nome do modelo
+        nome_base = os.path.splitext(uploaded_pdf_modelo.name)[0]
+        output_alta = f"ALTA - {nome_base}.pdf"
 
+        modelo = PdfReader(uploaded_pdf_modelo)
+        alta_bytes = uploaded_pdf_alta.read()
+        doc = fitz.open(stream=alta_bytes, filetype="pdf")
 
-    # Nome do arquivo de saída
-    output_alta = f"{uploaded_pdf_modelo.name}"
+        # Converter primeira página do PDF de alta em imagem
+        pix = doc.load_page(0).get_pixmap(dpi=300)
+        img = Image.open(io.BytesIO(pix.tobytes("png")))
+        img_cortada = cortar_ate_texto(img)
 
-    # Converter página em imagem
-    alta_bytes = uploaded_pdf_alta.read()
-    doc = fitz.open(stream=alta_bytes, filetype="pdf")
-    pix = doc.load_page(0).get_pixmap(dpi=300)
-    img = Image.open(io.BytesIO(pix.tobytes("png")))
-    img_cortada = cortar_ate_texto(img)
+        # Criar sobreposição com imagem cortada
+        packet = io.BytesIO()
+        c = canvas.Canvas(packet, pagesize=letter)
+        c.drawImage(ImageReader(img_cortada), x, y, width=width, height=height)
+        c.save()
+        packet.seek(0)
 
-    # Usar ImageReader
-    image_reader = ImageReader(img_cortada)
-    # Usar ImageReader do ReportLab
-    image_reader = ImageReader(img_cortada)
+        overlay_pdf = PdfReader(packet)
+        pagina2 = modelo.pages[1]
+        pagina2.merge_page(overlay_pdf.pages[0])
 
-    # Criar camada de imagem
-    packet = io.BytesIO()
-    c = canvas.Canvas(packet, pagesize=letter)
-    c.drawImage(image_reader, x, y, width=width, height=height)
-    c.save()
-    packet.seek(0)
+        output = PdfWriter()
+        output.add_page(modelo.pages[0])
+        output.add_page(pagina2)
+        for page in modelo.pages[2:]:
+            output.add_page(page)
 
-    # Inserir imagem na página 2 do modelo
-    overlay_pdf = PdfReader(packet)
-    pagina2 = modelo.pages[1]
-    pagina2.merge_page(overlay_pdf.pages[0])
+        final_buffer = io.BytesIO()
+        output.write(final_buffer)
 
-    # Gerar PDF final
-    output = PdfWriter()
-    output.add_page(modelo.pages[0])
-    output.add_page(pagina2)
-    for page in modelo.pages[2:]:
-        output.add_page(page)
+        # Mostrar prévia do PDF final
+        b64_pdf = base64.b64encode(final_buffer.getvalue()).decode('utf-8')
+        st.markdown("### 📄 Pré-visualização do PDF final:")
+        components.html(
+            f'<iframe width="100%" height="800" src="data:application/pdf;base64,{b64_pdf}"></iframe>',
+            height=820,
+        )
 
-    final_buffer = io.BytesIO()
-    output.write(final_buffer)
-    
-    # Pré-visualização do PDF no navegador
-    b64_pdf = base64.b64encode(final_buffer.getvalue()).decode('utf-8')
-    pdf_display = f'''
-        <iframe width="700" height="900" src="data:application/pdf;base64,{b64_pdf}" type="application/pdf"></iframe>
-    '''
-    st.markdown("### 📄 Pré-visualização do PDF:")
-    components.html(pdf_display, height=920)
+        # Botão de download
+        st.download_button("📥 Baixar PDF final", data=final_buffer.getvalue(), file_name=output_alta)
 
-    # Botão de download
-    st.download_button("📄 Baixar PDF final", data=final_buffer.getvalue(), file_name=output_alta)
+    except Exception as e:
+        st.error(f"Erro ao processar o PDF: {e}")
