@@ -41,9 +41,6 @@ height = st.number_input("Altura da imagem", value=620)
 if uploaded_pdf_modelo and uploaded_pdf_alta:
     modelo = PdfReader(uploaded_pdf_modelo)
 
-    # Abrindo o modelo com PyMuPDF
-    doc = fitz.open(stream=uploaded_pdf_modelo.read(), filetype="pdf")
-
 
     # Nome do arquivo de saída
     output_alta = f"{uploaded_pdf_modelo.name}.pdf"
