@@ -10,7 +10,7 @@ import numpy as np
 
 def cortar_ate_texto(imagem):
     dpi = 300
-    cm_para_cortar = 4
+    cm_para_cortar = 3
     polegadas_para_cortar = cm_para_cortar / 2.54
     pixels_para_cortar = int(polegadas_para_cortar * dpi)
     largura, altura = imagem.size
@@ -45,7 +45,7 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
     doc = fitz.open(stream=alta_bytes, filetype="pdf")
     
     # Extrair texto da primeira página para nome e ID
-    texto_pagina = doc.load_page(0).get_text("text")
+    texto_pagina = doc.load_page(1).get_text("text")
     linhas = texto_pagina.strip().splitlines()
     nome_paciente = linhas[0].strip()
     prontuario = ""
