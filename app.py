@@ -43,7 +43,7 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
 
 
     # Nome do arquivo de saída
-    output_alta = f"{uploaded_pdf_modelo.name}.pdf"
+    output_alta = f"{uploaded_pdf_modelo.name}"
 
     # Converter página em imagem
     alta_bytes = uploaded_pdf_alta.read()
