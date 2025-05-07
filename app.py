@@ -6,6 +6,7 @@ from reportlab.lib.utils import ImageReader
 from PIL import Image
 import fitz  # PyMuPDF
 import io
+import numpy as np
 
 def cortar_ate_texto(imagem):
     dpi = 300
