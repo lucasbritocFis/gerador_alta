@@ -41,10 +41,10 @@ height = st.number_input("Altura da imagem", value=620)
 if uploaded_pdf_modelo and uploaded_pdf_alta:
     modelo = PdfReader(uploaded_pdf_modelo)
 
-    alta_bytes = uploaded_pdf_modelo.read()
-    doc = fitz.open(stream=alta_bytes, filetype="pdf")
+    # Abrindo o modelo com PyMuPDF
+    doc = fitz.open(stream=uploaded_pdf_modelo.read(), filetype="pdf")
     
-    # Extrair texto da primeira página para nome e ID
+    # Extrair texto da primeira página do modelo para nome e ID
     texto_pagina = doc.load_page(2).get_text("text")
     linhas = texto_pagina.strip().splitlines()
     nome_paciente = linhas[0].strip()
