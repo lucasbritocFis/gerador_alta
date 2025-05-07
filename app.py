@@ -53,7 +53,7 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
     try:
         # Nome do arquivo de saída baseado no nome do modelo
         nome_base = os.path.splitext(uploaded_pdf_modelo.name)[0]
-        output_alta = f"ALTA - {nome_base}.pdf"
+        output_alta = f"{nome_base}.pdf"
 
         modelo = PdfReader(uploaded_pdf_modelo)
         alta_bytes = uploaded_pdf_alta.read()
