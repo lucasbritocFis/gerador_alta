@@ -41,7 +41,7 @@ height = st.number_input("Altura da imagem", value=620)
 if uploaded_pdf_modelo and uploaded_pdf_alta:
     modelo = PdfReader(uploaded_pdf_modelo)
 
-    alta_bytes = uploaded_pdf_alta.read()
+    alta_bytes = uploaded_pdf_modelo.read()
     doc = fitz.open(stream=alta_bytes, filetype="pdf")
     
     # Extrair texto da primeira página para nome e ID
