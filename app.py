@@ -46,10 +46,14 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
     output_alta = f"{uploaded_pdf_modelo.name}.pdf"
 
     # Converter página em imagem
+    alta_bytes = uploaded_pdf_alta.read()
+    doc = fitz.open(stream=alta_bytes, filetype="pdf")
     pix = doc.load_page(0).get_pixmap(dpi=300)
     img = Image.open(io.BytesIO(pix.tobytes("png")))
     img_cortada = cortar_ate_texto(img)
 
+    # Usar ImageReader
+    image_reader = ImageReader(img_cortada)
     # Usar ImageReader do ReportLab
     image_reader = ImageReader(img_cortada)
 
