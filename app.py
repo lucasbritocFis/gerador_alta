@@ -45,7 +45,7 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
     doc = fitz.open(stream=alta_bytes, filetype="pdf")
     
     # Extrair texto da primeira página para nome e ID
-    texto_pagina = doc.load_page(1).get_text("text")
+    texto_pagina = doc.load_page(2).get_text("text")
     linhas = texto_pagina.strip().splitlines()
     nome_paciente = linhas[0].strip()
     prontuario = ""
