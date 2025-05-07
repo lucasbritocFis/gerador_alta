@@ -13,10 +13,9 @@ def cortar_ate_texto(imagem):
 # Interface
 st.title("Gerador de Relatório com Página 2 Customizada")
 
-nome_paciente = st.text_input("Nome do paciente")
-prontuario = st.text_input("ID/Prontuário")
-uploaded_pdf_modelo = st.file_uploader("PDF modelo (com pelo menos 2 páginas)", type="pdf")
-uploaded_pdf_alta = st.file_uploader("PDF com relatório de alta", type="pdf")
+
+uploaded_pdf_modelo = st.file_uploader("PDF RELATORIO FISICA", type="pdf")
+uploaded_pdf_alta = st.file_uploader("PDF RELATORIO ALTA MEDICA", type="pdf")
 
 # Parâmetros de imagem
 x = st.slider("Posição X da imagem", 0, 100, 34)
