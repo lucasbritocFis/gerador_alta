@@ -43,19 +43,10 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
 
     # Abrindo o modelo com PyMuPDF
     doc = fitz.open(stream=uploaded_pdf_modelo.read(), filetype="pdf")
-    
-    # Extrair texto da primeira página do modelo para nome e ID
-    texto_pagina = doc.load_page(2).get_text("text")
-    linhas = texto_pagina.strip().splitlines()
-    nome_paciente = linhas[0].strip()
-    prontuario = ""
-    for linha in linhas:
-        if "ID:" in linha:
-            prontuario = linha.split("ID:")[1].strip()
-            break
+
 
     # Nome do arquivo de saída
-    output_alta = f"ALTA - {nome_paciente} (ID {prontuario}).pdf"
+    output_alta = f"{uploaded_pdf_modelo.name}.pdf"
 
     # Converter página em imagem
     pix = doc.load_page(0).get_pixmap(dpi=300)
