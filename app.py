@@ -84,14 +84,6 @@ if uploaded_pdf_modelo and uploaded_pdf_alta:
         final_buffer = io.BytesIO()
         output.write(final_buffer)
 
-        # Mostrar prévia do PDF final
-        b64_pdf = base64.b64encode(final_buffer.getvalue()).decode('utf-8')
-        st.markdown("### 📄 Pré-visualização do PDF final:")
-        components.html(
-            f'<iframe width="100%" height="800" src="data:application/pdf;base64,{b64_pdf}"></iframe>',
-            height=820,
-        )
-
         # Botão de download
         st.download_button("📥 Baixar PDF final", data=final_buffer.getvalue(), file_name=output_alta)
 
