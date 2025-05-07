@@ -23,7 +23,7 @@ y = st.slider("Posição Y da imagem", 0, 100, 28)
 width = st.slider("Largura da imagem", 100, 600, 540)
 height = st.slider("Altura da imagem", 100, 800, 620)
 
-if uploaded_pdf_modelo and uploaded_pdf_alta and nome_paciente and prontuario:
+if uploaded_pdf_modelo and uploaded_pdf_alta:
     modelo = PdfReader(uploaded_pdf_modelo)
     imagens = convert_from_bytes(uploaded_pdf_alta.read(), dpi=400)
     imagem = imagens[0]
@@ -36,10 +36,6 @@ if uploaded_pdf_modelo and uploaded_pdf_alta and nome_paciente and prontuario:
     packet = io.BytesIO()
     c = canvas.Canvas(packet, pagesize=letter)
     c.drawImage(buffer_img, x, y, width=width, height=height)
-    c.setFont("Helvetica", 15)
-    c.setFillColorRGB(1, 1, 1)
-    c.drawString(66, 740, nome_paciente)
-    c.drawString(66, 715, "ID: " + prontuario)
     c.save()
     packet.seek(0)
 
